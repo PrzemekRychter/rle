@@ -15,8 +15,13 @@ defmodule Rle do
   end
 
   def encode(original, encoded \\ [])
-  def encode([value | original], [{amount, value} | encoded]), do: encode(original, [{amount + 1, value} | encoded])
-  def encode([value | original], [value, value | encoded]), do: encode(original, [{3, value} | encoded])
+
+  def encode([value | original], [{amount, value} | encoded]),
+    do: encode(original, [{amount + 1, value} | encoded])
+
+  def encode([value | original], [value, value | encoded]),
+    do: encode(original, [{3, value} | encoded])
+
   def encode([value | original], encoded), do: encode(original, [value | encoded])
   def encode([], acc), do: Enum.reverse(acc)
 
@@ -25,6 +30,7 @@ defmodule Rle do
       {amount, elem}, acc ->
         decoded_value = for _ <- 1..amount, do: elem
         decoded_value ++ acc
+
       elem, acc ->
         [elem | acc]
     end)

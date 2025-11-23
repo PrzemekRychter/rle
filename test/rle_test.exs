@@ -4,24 +4,25 @@ defmodule RleTest do
   import Rle
 
   test "encode and decode returns lists" do
-    assert is_list(encode([?a, ?b, ?c, ?c ,?c]))
+    assert is_list(encode([?a, ?b, ?c, ?c, ?c]))
     assert is_list(decode([{101, ?d}, {269, ?c}]))
   end
 
   test "decoded data is the same after encoding" do
-    data = [?a,?b, ?c, ?c, ?c, ?c, ?f, ?d, ?d, ?d]
-    assert (encode(data) |> decode()) == data
+    data = [?a, ?b, ?c, ?c, ?c, ?c, ?f, ?d, ?d, ?d]
+    assert encode(data) |> decode() == data
   end
 
   test "encoded data is no longer then data" do
-    data = [?a, ?b, ?c, ?d ,?f, ?a, ?a, ?b, ?b]
+    data = [?a, ?b, ?c, ?d, ?f, ?a, ?a, ?b, ?b]
     assert length(encode(data)) <= length(data)
   end
 
   test "encode/decode raises FunctionClauseError for non-valid input" do
-    assert_raise(FunctionClauseError,  fn -> encode(%{valid?: :invalid_input}) end)
+    assert_raise(FunctionClauseError, fn -> encode(%{valid?: :invalid_input}) end)
     assert_raise(FunctionClauseError, fn -> decode(150.00) end)
   end
+
   test "encoded packable data is shorter then data" do
     data = [?a, ?a, ?a, ?b, ?c, ?b, ?b]
     assert length(encode(data)) < length(data)
@@ -39,7 +40,14 @@ defmodule RleTest do
     3 and more same items inside data
   """
   test "encode packable" do
-    assert Rle.encode([?a, ?b, ?b, ?b, ?b, ?b, ?b, ?c, ?c, ?a, ?a, ?a, ?b]) == [?a, {6, ?b}, ?c, ?c, {3, ?a}, ?b]
+    assert Rle.encode([?a, ?b, ?b, ?b, ?b, ?b, ?b, ?c, ?c, ?a, ?a, ?a, ?b]) == [
+             ?a,
+             {6, ?b},
+             ?c,
+             ?c,
+             {3, ?a},
+             ?b
+           ]
   end
 
   test "endoded without packable" do
@@ -59,7 +67,20 @@ defmodule RleTest do
 
   # same as encode
   test "decode" do
-    assert Rle.decode([?b,{5, ?f}, ?c, ?d, ?d, {3, ?c}]) == [?b, ?f, ?f, ?f, ?f, ?f, ?c, ?d, ?d, ?c, ?c, ?c]
+    assert Rle.decode([?b, {5, ?f}, ?c, ?d, ?d, {3, ?c}]) == [
+             ?b,
+             ?f,
+             ?f,
+             ?f,
+             ?f,
+             ?f,
+             ?c,
+             ?d,
+             ?d,
+             ?c,
+             ?c,
+             ?c
+           ]
   end
 
   test "encode nad decode binary" do
