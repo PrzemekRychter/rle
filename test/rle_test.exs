@@ -53,12 +53,17 @@ defmodule RleTest do
     assert encode([]) == []
   end
 
-  test "encode raise FunctionClause for non list argument" do
-    assert_raise(FunctionClauseError, fn -> encode("invalid argument") end)
+  test "encode raise FunctionClause for non list or string argument" do
+    assert_raise(FunctionClauseError, fn -> encode(%{invald: :argument}) end)
   end
 
   # same as encode
   test "decode" do
     assert Rle.decode([?b,{5, ?f}, ?c, ?d, ?d, {3, ?c}]) == [?b, ?f, ?f, ?f, ?f, ?f, ?c, ?d, ?d, ?c, ?c, ?c]
+  end
+
+  test "encode nad decode binary" do
+    data = "helllow I am AAAAndreewww"
+    assert decode(encode(data)) == data
   end
 end
